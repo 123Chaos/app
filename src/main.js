@@ -8,6 +8,10 @@ Vue.component(TypeNav.name, TypeNav);
 import router from "@/router";
 // 引入仓库
 import store from "@/store";
+// 引入mock
+import "@/mock/mockServer";
+// 引入swiper样式
+import "swiper/css/swiper.css";
 Vue.config.productionTip = false;
 new Vue({
   render: (h) => h(App),
@@ -15,5 +19,5 @@ new Vue({
   // 注册路由信息：当这里写router时，组件都拥有$route，$router属性
   router,
   // 注册仓库:组件实例会多一个$store的属性
-  store
+  store,
 }).$mount("#app");

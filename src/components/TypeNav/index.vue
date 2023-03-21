@@ -1,7 +1,59 @@
-<template>  
+<template>
   <div class="type-nav">
     <div class="container">
-      <h2 class="all">全部商品分类</h2>
+      <div @mouseenter="enterShow" @mouseleave="leaveShow">
+        <h2 class="all">全部商品分类</h2>
+        <transition name="sort">
+          <div class="sort" v-show="isShow">
+            <!-- 利用事件委派和编程式导航实现路由跳转与传参 -->
+            <div class="all-sort-list2" @click="goSearch">
+              <div
+                class="item"
+                v-for="(c1, index) in categoryList.slice(0, 16)"
+                :key="c1.categoryId"
+                :class="{ cur: currentIndex == index }"
+              >
+                <h3
+                  @mouseenter="changeIndex(index)"
+                  @mouseleave="removeIndex()"
+                >
+                  <a
+                    :data-categoryName="c1.categoryName"
+                    :data-category1Id="c1.categoryId"
+                    >{{ c1.categoryName }}</a
+                  >
+                </h3>
+                <div class="item-list clearfix">
+                  <div
+                    class="subitem"
+                    v-for="c2 in c1.categoryChild"
+                    :key="c2.categoryId"
+                  >
+                    <dl class="fore">
+                      <dt>
+                        <a
+                          :data-categoryName="c2.categoryName"
+                          :data-category2Id="c2.categoryId"
+                          >{{ c2.categoryName }}</a
+                        >
+                      </dt>
+                      <dd>
+                        <em v-for="c3 in c2.categoryChild" :key="c3.categoryId">
+                          <a
+                            :data-categoryName="c3.categoryName"
+                            :data-category3Id="c3.categoryId"
+                            >{{ c3.categoryName }}</a
+                          >
+                        </em>
+                      </dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </transition>
+      </div>
       <nav class="nav">
         <a href="###">服装城</a>
         <a href="###">美妆馆</a>
@@ -12,55 +64,30 @@
         <a href="###">有趣</a>
         <a href="###">秒杀</a>
       </nav>
-      <div class="sort">
-        <div class="all-sort-list2">
-          <div
-            class="item"
-            v-for="(c1, index) in categoryList.slice(0, 16)"
-            :key="c1.categoryId"
-            :class="{ cur: currentIndex == index }"
-          >
-            <h3 @mouseenter="changeIndex(index)" @mouseleave="removeIndex()">
-              <a href="">{{ c1.categoryName }}</a>
-            </h3>
-            <div class="item-list clearfix">
-              <div
-                class="subitem"
-                v-for="c2 in c1.categoryChild"
-                :key="c2.categoryId"
-              >
-                <dl class="fore">
-                  <dt>
-                    <a href="">{{ c2.categoryName }}</a>
-                  </dt>
-                  <dd>
-                    <em v-for="c3 in c2.categoryChild" :key="c3.categoryId">
-                      <a href="">{{ c3.categoryName }}</a>
-                    </em>
-                  </dd>
-                </dl>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>
 
 <script>
+// 不是默认暴露需要加{}
 import { mapState } from "vuex";
+// 引入lodash:引入方式是把lodash全部功能引用
+// import _ from "lodash";
+// 按需引入
+import throttle from "lodash/throttle";
 export default {
   name: "TypeNav",
   data() {
     return {
       currentIndex: -1,
+      isShow: true,
     };
   },
   // 组件挂载完毕,就可以向服务器发请求
   mounted() {
-    // 通知Vuex发请求,获取数据,存储于仓库之中
-    this.$store.dispatch("categoryList");
+    if (this.$route.path != "/home") {
+      this.isShow = false;
+    }
   },
   computed: {
     ...mapState({
@@ -71,12 +98,46 @@ export default {
     }),
   },
   methods: {
-    changeIndex(index) {
+    // throttle回调函数不要使用箭头函数，会导致this上下文问题
+    changeIndex: throttle(function (index) {
       this.currentIndex = index;
-    },
+    }, 50),
+    // 移除选中的一级标签
     removeIndex(index) {
       this.currentIndex = -1;
-    }
+    },
+    // 路由跳转的回调函数
+    goSearch(event) {
+      let element = event.target;
+      console.log(element);
+      let { categoryname, category1id, category2id, category3id } =
+        element.dataset;
+      if (categoryname) {
+        let location = { name: "search" };
+        let query = { categoryName: categoryname };
+        if (category1id) {
+          query.category1Id = category1id;
+        } else if (category2id) {
+          query.category2Id = category2id;
+        } else {
+          query.category3Id = category3id;
+        }
+        // 判断：如果路由跳转带有params参数，也要传递
+        // 整理参数
+        if (this.$route.params) {
+          location.params = this.$route.params;
+          location.query = query;
+          this.$router.push(location);
+        }
+      }
+    },
+    // 当鼠标移入，让商品列表进行展示
+    enterShow() {
+      this.isShow = true;
+    },
+    leaveShow() {
+      if (this.$route.path != "/home") this.isShow = false;
+    },
   },
 };
 </script>
@@ -201,6 +262,16 @@ export default {
           background-color: #e1251b;
         }
       }
+    }
+    // 过渡动画的样式
+    .sort-enter {
+      opacity: 0;
+    }
+    .sort-enter-to {
+      opacity: 1;
+    }
+    .sort-enter-active {
+      transition: all 0.18s linear;
     }
   }
 }

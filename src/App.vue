@@ -17,6 +17,10 @@ import Footer from "./components/Footer";
 
 export default {
   name: "App",
+  mounted() {
+    // 通知Vuex发请求,获取商品分类的三级列表数据,存储于仓库之中
+    this.$store.dispatch("categoryList");
+  },
   components: {
     Header,
     Footer,

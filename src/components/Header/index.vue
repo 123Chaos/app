@@ -59,21 +59,13 @@ export default {
   },
   methods: {
     goSearch() {
-      //路由传参
-      //字符串形式
-      // this.$router.push("/search/" + this.keyword+"?k=" + this.keyword.toUpperCase());
-      //模板字符串
-      // this.$router.push(`/search/${this.keyword}?k=${this.keyword.toUpperCase()}`)
-      //对象
-      this.$router.push(
-        {
+      // 如果有query参数一并带过去
+        let location = {
           name: "search",
-          params: { keyword: this.keyword },
-          query: { k: this.keyword.toLocaleUpperCase() },
-        },
-        () => {},
-        () => {}
-      );
+          params: { keyword: this.keyword || undefined },
+          query: this.$route.query,
+        };
+        this.$router.push(location);
     },
   },
 };

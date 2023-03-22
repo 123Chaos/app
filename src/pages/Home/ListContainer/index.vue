@@ -3,23 +3,7 @@
     <div class="sortList clearfix">
       <div class="center">
         <!--banner轮播-->
-        <div class="swiper-container" ref="mySwiper">
-          <div class="swiper-wrapper">
-            <div
-              class="swiper-slide"
-              v-for="carousel in bannerList"
-              :key="carousel.id"
-            >
-              <img :src="carousel.imgUrl" />
-            </div>
-          </div>
-          <!-- 如果需要分页器 -->
-          <div class="swiper-pagination"></div>
-
-          <!-- 如果需要导航按钮 -->
-          <div class="swiper-button-prev"></div>
-          <div class="swiper-button-next"></div>
-        </div>
+        <Carousel :list="bannerList" />
       </div>
       <div class="right">
         <div class="news">
@@ -109,36 +93,6 @@ export default {
     }),
   },
   updated() {},
-  // 利用watch和nextTick解决轮播图分页器问题
-  // nextTick:在下一次DOM更新 循环结束之后，进行延迟回调。在修改数据之后立即调用这个方法获取更新后的DOM。
-  watch: {
-    bannerList: {
-      handler(newValue, oldValue) {
-        this.$nextTick(() => {
-          // 在new Swiper实例之前，页面中Swiper结构要完整
-          var mySwiper = new Swiper(this.$refs.mySwiper, {
-            loop: true, // 循环模式选项
-
-            // 如果需要分页器
-            pagination: {
-              el: ".swiper-pagination",
-            },
-
-            // 如果需要前进后退按钮
-            navigation: {
-              nextEl: ".swiper-button-next",
-              prevEl: ".swiper-button-prev",
-            },
-
-            // 如果需要滚动条
-            scrollbar: {
-              el: ".swiper-scrollbar",
-            },
-          });
-        });
-      },
-    },
-  },
 };
 </script>
 

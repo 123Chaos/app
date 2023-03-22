@@ -93,7 +93,7 @@
 </template>
 
 <script>
-export default { name: "Floor" };
+export default { name: "Floor", props: ["list"] };
 </script>
 
 <style scoped lang="less">

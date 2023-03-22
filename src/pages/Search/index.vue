@@ -163,7 +163,6 @@ export default {
     Object.assign(this.searchParams, this.$route.query, this.$route.params);
   },
   mounted() {
-    // this.$store.dispatch("getSearchList", {});
     this.getData();
   },
   computed: {
@@ -172,6 +171,19 @@ export default {
   methods: {
     getData() {
       this.$store.dispatch("getSearchList", this.searchParams);
+    },
+  },
+  // 数据监听：监听组件实例身上的属性的属性值变化
+  watch: {
+    $route(newValue, oldValue) {
+      // 发请求整理参数
+      Object.assign(this.searchParams, this.$route.query, this.$route.params);
+      // 发起ajax请求
+      this.getData();
+      // 每一次请求完毕,应该把相应的1、2、3级分类置空,接受下一次相应的id
+      this.searchParams.category1Id = '';
+      this.searchParams.category2Id = '';
+      this.searchParams.category3Id = '';
     },
   },
 };

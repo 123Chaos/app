@@ -14,8 +14,8 @@ import store from "@/store";
 import "@/mock/mockServer";
 // 引入swiper样式
 import "swiper/css/swiper.css";
-import { reqGetSearchInfo } from "./api";
-console.log(reqGetSearchInfo({}));
+// import { reqGetSearchInfo } from "./api";
+// console.log(reqGetSearchInfo({}));
 Vue.config.productionTip = false;
 new Vue({
   render: (h) => h(App),

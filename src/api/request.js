@@ -15,11 +15,16 @@ const requests = axios.create({
 });
 
 // 请求拦截器:在发送请求之前,请求拦截器可以检测到,可以在发送前完成一些业务
-requests.interceptors.request.use((config) => {
-  // 进度条开始动
-  nProgress.start();
-  return config;
-});
+requests.interceptors.request.use(
+  (config) => {
+    // 进度条开始动
+    nProgress.start();
+    return config;
+  },
+  (error) => {
+    return Promise.reject(new Error("fail"));
+  }
+);
 
 // 响应拦截器:在服务器发回数据之前,响应拦截器可以检测到,可以在发送前完成一些业务
 requests.interceptors.response.use(

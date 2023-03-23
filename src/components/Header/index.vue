@@ -52,6 +52,8 @@
 </template>
 
 <script>
+import search from "@/store/search";
+
 export default {
   name: "",
   data() {
@@ -60,13 +62,19 @@ export default {
   methods: {
     goSearch() {
       // 如果有query参数一并带过去
-        let location = {
-          name: "search",
-          params: { keyword: this.keyword || undefined },
-          query: this.$route.query,
-        };
-        this.$router.push(location);
+      let location = {
+        name: "search",
+        params: { keyword: this.keyword || undefined },
+        query: this.$route.query,
+      };
+      this.$router.push(location);
     },
+  },
+  mounted() {
+    this.$bus.$on("clear", () => {
+      this.keyword = "";
+      this.$router.push({ name: "search", query: this.$route.query });
+    });
   },
 };
 </script>

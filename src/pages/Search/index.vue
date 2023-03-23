@@ -11,15 +11,25 @@
             </li>
           </ul>
           <ul class="fl sui-tag">
-            <li class="with-x">手机</li>
-            <li class="with-x">iphone<i>×</i></li>
-            <li class="with-x">华为<i>×</i></li>
-            <li class="with-x">OPPO<i>×</i></li>
+            <!-- 分类的面包屑 -->
+            <li class="with-x" v-if="searchParams.categoryName">
+              {{ searchParams.categoryName
+              }}<i @click="removeCategoryName">x</i>
+            </li>
+            <!-- 关键字的面包屑 -->
+            <li class="with-x" v-if="searchParams.keyword">
+              {{ searchParams.keyword }}<i @click="removeKeyword">x</i>
+            </li>
+            <!-- 品牌的面包屑 -->
+            <li class="with-x" v-if="searchParams.trademark">
+              {{ searchParams.trademark.split(":")[1]
+              }}<i @click="removeTrademark">x</i>
+            </li>
           </ul>
         </div>
 
         <!--selector-->
-        <SearchSelector />
+        <SearchSelector @trademarkInfo="trademarkInfo" />
 
         <!--details-->
         <div class="details clearfix">
@@ -172,6 +182,34 @@ export default {
     getData() {
       this.$store.dispatch("getSearchList", this.searchParams);
     },
+    removeCategoryName() {
+      // 如果置空，还需要向服务器发送数据
+      // 带给服务器参数说明可有可无，如果属性值为空的字符串还是会把相应字段带给服务器
+      // 把相应字段变为undefined，当前字段不会带给服务器
+      this.searchParams.categoryName = undefined;
+      this.searchParams.category1Id = undefined;
+      this.searchParams.category2Id = undefined;
+      this.searchParams.category3Id = undefined;
+      this.getData();
+      // 地址栏也需要更改
+      // 删除query，保留params
+      this.$router.push({ name: "search", params: this.$route.params });
+    },
+    removeKeyword() {
+      this.searchParams.keyword = undefined;
+      this.getData();
+      // 通知兄弟组件清除关键字
+      this.$bus.$emit("clear");
+    },
+    // 自定义事件的回调
+    trademarkInfo(trademark) {
+      this.searchParams.trademark = `${trademark.tmId}:${trademark.tmName}`;
+      this.getData();
+    },
+    removeTrademark() {
+      this.searchParams.trademark = undefined;
+      this.getData();
+    },
   },
   // 数据监听：监听组件实例身上的属性的属性值变化
   watch: {
@@ -181,9 +219,9 @@ export default {
       // 发起ajax请求
       this.getData();
       // 每一次请求完毕,应该把相应的1、2、3级分类置空,接受下一次相应的id
-      this.searchParams.category1Id = '';
-      this.searchParams.category2Id = '';
-      this.searchParams.category3Id = '';
+      this.searchParams.category1Id = undefined;
+      this.searchParams.category2Id = undefined;
+      this.searchParams.category3Id = undefined;
     },
   },
 };

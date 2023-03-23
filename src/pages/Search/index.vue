@@ -25,11 +25,20 @@
               {{ searchParams.trademark.split(":")[1]
               }}<i @click="removeTrademark">x</i>
             </li>
+            <!-- 平台售卖属性的面包屑 -->
+            <li
+              class="with-x"
+              v-for="(attrValue, index) in searchParams.props"
+              :key="index"
+            >
+              {{ attrValue.split(":")[1] }}
+              <i @click="removeAttr(index)">x</i>
+            </li>
           </ul>
         </div>
 
         <!--selector-->
-        <SearchSelector @trademarkInfo="trademarkInfo" />
+        <SearchSelector @trademarkInfo="trademarkInfo" @attrInfo="attrInfo" />
 
         <!--details-->
         <div class="details clearfix">
@@ -206,8 +215,24 @@ export default {
       this.searchParams.trademark = `${trademark.tmId}:${trademark.tmName}`;
       this.getData();
     },
+    // 删除品牌信息
     removeTrademark() {
       this.searchParams.trademark = undefined;
+      this.getData();
+    },
+    // 收集平台属性
+    attrInfo(attr, attrValue) {
+      let props = `${attr.attrId}:${attrValue}:${attr.attrName}`;
+      // 数组去重
+      if (this.searchParams.props.indexOf(props) == -1)
+        this.searchParams.props.push(props);
+
+      // 再次发请求
+      this.getData();
+    },
+    // 删除售卖属性
+    removeAttr(index) {
+      this.searchParams.props.splice(index, 1);
       this.getData();
     },
   },

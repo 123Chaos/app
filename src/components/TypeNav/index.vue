@@ -109,7 +109,6 @@ export default {
     // 路由跳转的回调函数
     goSearch(event) {
       let element = event.target;
-      console.log(element);
       let { categoryname, category1id, category2id, category3id } =
         element.dataset;
       if (categoryname) {

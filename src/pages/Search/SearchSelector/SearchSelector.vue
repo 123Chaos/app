@@ -28,7 +28,7 @@
           <li
             v-for="attrValue in attr.attrValueList"
             :key="attrValue"
-            @click="attrInfo"
+            @click="attrInfo(attr, attrValue)"
           >
             <a>{{ attrValue }}</a>
           </li>
@@ -49,11 +49,12 @@ export default {
   methods: {
     // 品牌的事件处理函数
     trademarkHandler(trademark) {
-      console.log(trademark);
       this.$emit("trademarkInfo", trademark);
     },
     // 平台售卖属性值的点击事件
-    
+    attrInfo(attr, attrInfo) {
+      this.$emit("attrInfo", attr, attrInfo);
+    },
   },
 };
 </script>

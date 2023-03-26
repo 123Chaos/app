@@ -22,9 +22,9 @@
         <!-- 左侧放大镜区域 -->
         <div class="previewWrap">
           <!--放大镜效果-->
-          <Zoom />
+          <Zoom :skuImageList="skuInfo.skuImageList" />
           <!-- 小图列表 -->
-          <ImageList />
+          <ImageList :skuImageList="skuInfo.skuImageList" />
         </div>
         <!-- 右侧选择区域布局 -->
         <div class="InfoWrap">
@@ -81,29 +81,22 @@
           <div class="choose">
             <div class="chooseArea">
               <div class="choosed"></div>
-              <dl>
-                <dt class="title">选择颜色</dt>
-                <dd changepirce="0" class="active">金色</dd>
-                <dd changepirce="40">银色</dd>
-                <dd changepirce="90">黑色</dd>
-              </dl>
-              <dl>
-                <dt class="title">内存容量</dt>
-                <dd changepirce="0" class="active">16G</dd>
-                <dd changepirce="300">64G</dd>
-                <dd changepirce="900">128G</dd>
-                <dd changepirce="1300">256G</dd>
-              </dl>
-              <dl>
-                <dt class="title">选择版本</dt>
-                <dd changepirce="0" class="active">公开版</dd>
-                <dd changepirce="-1000">移动版</dd>
-              </dl>
-              <dl>
-                <dt class="title">购买方式</dt>
-                <dd changepirce="0" class="active">官方标配</dd>
-                <dd changepirce="-240">优惠移动版</dd>
-                <dd changepirce="-390">电信优惠版</dd>
+              <dl v-for="skuSaleAttr in skuSaleAttrList" :key="skuSaleAttr.id">
+                <dt class="title">{{ skuSaleAttr.saleAttrName }}</dt>
+                <dd
+                  changepirce="0"
+                  :class="{ active: skuSaleAttrValue.isChecked == 1 }"
+                  v-for="skuSaleAttrValue in skuSaleAttr.skuSaleAttrValueList"
+                  :key="skuSaleAttrValue.id"
+                  @click="
+                    changeActive(
+                      skuSaleAttrValue,
+                      skuSaleAttr.skuSaleAttrValueList
+                    )
+                  "
+                >
+                  {{ skuSaleAttrValue.saleAttrValueName }}
+                </dd>
               </dl>
             </div>
             <div class="cartWrap">
@@ -368,6 +361,17 @@ export default {
   },
   computed: {
     ...mapGetters(["categoryView", "skuInfo"]),
+    skuImageList() {
+      return this.skuInfo.skuImageList || [];
+    },
+  },
+  methods: {
+    changeActive(skuSaleAttrValue, arr) {
+      arr.forEach((item) => {
+        item.isChecked = "0";
+      });
+      skuSaleAttrValue.isChecked = "1";
+    },
   },
 };
 </script>

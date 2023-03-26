@@ -17,10 +17,12 @@ const actions = {
   },
 };
 const getters = {
+  // 路径导航简化信息
   categoryView(state) {
     // 防止传回undefined
     return state.goodInfo.categoryView || {};
   },
+  // 产品售卖属性简化信息
   skuInfo(state) {
     return state.goodInfo.skuInfo || {};
   },

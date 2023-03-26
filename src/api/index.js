@@ -19,3 +19,7 @@ export const reqGetFloorList = () =>
 // 当前接口必须给服务器传递一个默认参数，可以是个空对象
 export const reqGetSearchInfo = (params) =>
   requests({ url: "/list", method: "post", data: params });
+
+// 获取产品详情信息的接口
+export const reqGoodsInfo = (goodid) =>
+  requests({ url: `/item/${goodid}`, method: "get" });

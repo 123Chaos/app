@@ -1,5 +1,5 @@
 # app
-
+>This project requires some plugins which you can find in package.json, make sure you have them before running this project.
 ## Project setup
 ```
 npm install
